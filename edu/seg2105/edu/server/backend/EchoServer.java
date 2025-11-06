@@ -60,11 +60,20 @@ public class EchoServer extends AbstractServer
   {
 	String message = msg.toString();
 	
+	int start, end;
+	start = message.indexOf('<');
+	end = message.indexOf('>');
+	
+	String slice = message.substring(start + 1, end);
+	String slice2 = message.substring(start, end +1);
+	
 
+	serverUI.display(message); //debug
+	
 	
 	if (message.startsWith("#login")) {
 		
-		serverUI.display(message);
+
 		
 		//recived more than onces
 		
@@ -72,24 +81,17 @@ public class EchoServer extends AbstractServer
 			
 			String errorMess = "The #login command should only be allowed as the first command received after a client connects.";
 			
-			try {
-				client.sendToClient((Object) errorMess);
-				client.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			/*
+			 * try { client.sendToClient((Object) errorMess); client.close(); } catch
+			 * (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
+			 */
 			
 			
 		} else {
 			
-			
-			int start, end;
-			start = message.indexOf('<');
-			end = message.indexOf('>');
-			
-			String slice = message.substring(start + 1, end);
-			
+			System.out.println("Message received: " + message + " from null\n" + slice2 +" has logged on");
+			String loginShoutOut = slice2 +" has logged on";
+			this.sendToAllClients((Object) loginShoutOut);
 			client.setInfo(key, slice);
 			
 		}
@@ -100,11 +102,13 @@ public class EchoServer extends AbstractServer
 		
 	} else {
 		
-		System.out.println("Message received: " + msg + " from " + client + " " + client.getInfo(key));
+		System.out.println("Message received: <" + msg + "> from " + "<" + client.getInfo(key) + ">");
 		
 		String message2 = (String) msg;
 		
-		message2 = client.getInfo(key).toString() + ":" + msg;
+		//message2 = client.getInfo(key).toString() + ">" + msg; //debug
+		
+		message2 = "" + msg;
 		
 		
 		

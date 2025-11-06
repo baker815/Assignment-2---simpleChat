@@ -61,7 +61,6 @@ public class ChatClient extends AbstractClient
   {
     clientUI.display(msg.toString());
     
-    
   }
 
   /**
@@ -197,7 +196,7 @@ public class ChatClient extends AbstractClient
   	@Override
 	protected void connectionEstablished() {
   		
-  	    String message = "#login<" + loginID + ">";
+  	    String message = "#login <" + loginID + ">";
   	    try {
 			sendToServer(message);
 		} catch (IOException e) {

@@ -133,7 +133,7 @@ public class ClientConsole implements ChatIF
     {
     	
     	if (args.length < 1) {
-    		System.out.println("No login information provided \nConnection stoped");
+    		System.out.println("ERROR - No login ID specified.  Connection aborted.");
     		return;
     	}
       host = "localhost";
