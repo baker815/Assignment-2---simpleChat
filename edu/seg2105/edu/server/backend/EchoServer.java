@@ -66,13 +66,33 @@ public class EchoServer extends AbstractServer
 		
 		serverUI.display(message);
 		
-		int start, end;
-		start = message.indexOf('<');
-		end = message.indexOf('>');
+		//recived more than onces
 		
-		String slice = message.substring(start + 1, end);
-		
-		client.setInfo(key, slice);
+		if (client.getInfo(key) != null) {
+			
+			String errorMess = "The #login command should only be allowed as the first command received after a client connects.";
+			
+			try {
+				client.sendToClient((Object) errorMess);
+				client.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
+		} else {
+			
+			
+			int start, end;
+			start = message.indexOf('<');
+			end = message.indexOf('>');
+			
+			String slice = message.substring(start + 1, end);
+			
+			client.setInfo(key, slice);
+			
+		}
 		
 		
 		
