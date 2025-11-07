@@ -28,6 +28,7 @@ public class EchoServer extends AbstractServer
    */
   final public static int DEFAULT_PORT = 5555;
   final public String key = "LoginID";
+  final public String serverPrefix = "SERVER MESSAGE> ";
   
   
   ChatIF serverUI; 
@@ -58,20 +59,19 @@ public class EchoServer extends AbstractServer
   public void handleMessageFromClient
     (Object msg, ConnectionToClient client)
   {
-	String message = msg.toString();
-	
-	int start, end;
-	start = message.indexOf('<');
-	end = message.indexOf('>');
-	
-	String slice = message.substring(start + 1, end);
-	String slice2 = message.substring(start, end +1);
-	
 
-	serverUI.display(message); //debug
 	
+	  String message = msg.toString();
 	
 	if (message.startsWith("#login")) {
+		
+		
+		int start, end;
+		start = message.indexOf('<');
+		end = message.indexOf('>');
+		
+		String slice = message.substring(start + 1, end);
+		String slice2 = message.substring(start, end +1);
 		
 
 		
@@ -81,16 +81,21 @@ public class EchoServer extends AbstractServer
 			
 			String errorMess = "The #login command should only be allowed as the first command received after a client connects.";
 			
-			/*
-			 * try { client.sendToClient((Object) errorMess); client.close(); } catch
-			 * (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
-			 */
+			
+			try {
+				client.sendToClient((Object) errorMess);
+				client.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+		
 			
 			
 		} else {
 			
 			System.out.println("Message received: " + message + " from null\n" + slice2 +" has logged on");
-			String loginShoutOut = slice2 +" has logged on";
+			String loginShoutOut = serverPrefix + slice2 +" has logged on";
 			this.sendToAllClients((Object) loginShoutOut);
 			client.setInfo(key, slice);
 			
@@ -106,11 +111,7 @@ public class EchoServer extends AbstractServer
 		
 		String message2 = (String) msg;
 		
-		//message2 = client.getInfo(key).toString() + ">" + msg; //debug
-		
-		message2 = "" + msg;
-		
-		
+		message2 = client.getInfo(key).toString() + "> " + msg; 
 		
 		this.sendToAllClients((Object) message2);
 	}
@@ -121,19 +122,14 @@ public class EchoServer extends AbstractServer
   {
 	  
 	  	if (!message.startsWith("#")) {
-	  		
-	  		this.sendToAllClients("SERVER MSG> " + message);
+	  		this.sendToAllClients(serverPrefix + message);
 	  	} else if (message.equals("#quit")) {
-	  		serverUI.display("Quiting");
 	  		System.exit(0);
 	  	} else if(message.equals("#stop")) {
-	  		serverUI.display("Server stopping");
 	  		this.stopListening();
 	  	} else if (message.equals("#close")) {
-	  		serverUI.display("Server closing");
 	  		this.close();
 	  	} else if (message.startsWith("#setport")) {
-	  		 
 	  		if (this.isListening()) {
 	  			serverUI.display("Server is not closed");
 	  			return;
@@ -151,8 +147,6 @@ public class EchoServer extends AbstractServer
 	  			return;
 	  		}
 	  		this.listen();
-	  		serverUI.display("Sever is open");
-	  	
 	  	} else if (message.equals("#getport")) {
 			serverUI.display("Sever port is " + this.getPort());	  		
 	  	}
@@ -203,12 +197,18 @@ public class EchoServer extends AbstractServer
 	synchronized protected void clientDisconnected(ConnectionToClient client) {
 		// Since we don't track which ID belongs to this client directly,
 		// remove by value.
-		System.out.println("Client Disconnected");
+  		String msg = "Client " +"<"+ client.getInfo(key).toString() + "> Disconnected";
+  		String msg2 = serverPrefix +msg;
+  		this.sendToAllClients(msg2);
+		System.out.println(msg);
 	}
   	
   	@Override
 	synchronized protected void clientException(ConnectionToClient client, Throwable exception) {
-		System.out.println("Client Disconnected");
+  		String msg = "Client " +"<"+ client.getInfo(key).toString() + "> Disconnected";
+  		String msg2 = serverPrefix +msg;
+  		this.sendToAllClients(msg2);
+		System.out.println(msg);
 	}
 }
 //End of EchoServer class

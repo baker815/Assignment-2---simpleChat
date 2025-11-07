@@ -73,8 +73,17 @@ public class EchoConsole implements ChatIF {
 	   * @param message The string to be displayed.
 	   */
 	  public void display(String message) 
+	  
 	  {
-	    System.out.println("SERVER MSG> " + message);
+		  
+		if (message.startsWith("#")) {
+			
+			System.out.println(message);
+			
+		} else {
+			
+			System.out.println(server.serverPrefix + message);
+		}
 	  }
 
 
