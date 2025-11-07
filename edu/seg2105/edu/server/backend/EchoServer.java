@@ -61,8 +61,10 @@ public class EchoServer extends AbstractServer
   {
 
 	
-	  String message = msg.toString();
-	
+	 String message = msg.toString();
+	 
+	 
+	//Checks if its a login command
 	if (message.startsWith("#login")) {
 		
 		
@@ -75,12 +77,11 @@ public class EchoServer extends AbstractServer
 		
 
 		
-		//recived more than onces
+		//Received login more than once
 		
 		if (client.getInfo(key) != null) {
 			
 			String errorMess = "The #login command should only be allowed as the first command received after a client connects.";
-			
 			
 			try {
 				client.sendToClient((Object) errorMess);
@@ -91,7 +92,7 @@ public class EchoServer extends AbstractServer
 			} 
 		
 			
-			
+		//if not received more than once	
 		} else {
 			
 			System.out.println("Message received: " + message + " from null\n" + slice2 +" has logged on");
@@ -104,15 +105,12 @@ public class EchoServer extends AbstractServer
 		
 		
 	
-		
+	//not a command i.e an echo message	
 	} else {
 		
 		System.out.println("Message received: <" + msg + "> from " + "<" + client.getInfo(key) + ">");
-		
 		String message2 = (String) msg;
-		
 		message2 = client.getInfo(key).toString() + "> " + msg; 
-		
 		this.sendToAllClients((Object) message2);
 	}
 	
